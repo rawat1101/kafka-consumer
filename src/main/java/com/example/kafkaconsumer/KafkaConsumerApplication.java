@@ -36,20 +36,18 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 //		String jaasTemplate = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
 		String jaasTemplate = "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";";
 
-//		String jaasCfg = String.format(jaasTemplate, "songLoggingConsumer", "songLoggingConsumer");
-//	    String jaasCfg = String.format(jaasTemplate, "test", "test");
+//		String jaasCfg = String.format(jaasTemplate, "user", "password");
+        String jaasCfg = String.format(jaasTemplate, "test", "test");
 //	    String jaasCfg = String.format(jaasTemplate, "test1", "test1");
-	    String jaasCfg = String.format(jaasTemplate, "hsreco", "hsreco");
-//		String jaasCfg = String.format(jaasTemplate, "svdView", "svdView");
 
 		props.put("security.protocol", "SASL_PLAINTEXT");
 		props.put("sasl.mechanism", "SCRAM-SHA-256");
 //		props.put("security.protocol", "SASL_PLAINTEXT");
 //		props.put("sasl.mechanism", "PLAIN");
 		props.put("sasl.jaas.config", jaasCfg);
-//		props.put("bootstrap.servers", "172.26.212.67:9091,172.26.11.100:9091,172.26.11.137:9091");
+//		props.put("bootstrap.servers", "host1:9091,host2:9092,host3:9093");
 //		props.put("bootstrap.servers", "localhost:9091");
-		props.put("bootstrap.servers", "172.26.69.155:9091");
+		props.put("bootstrap.servers", "localhost:9091");
 		props.put("auto.offset.reset", "earliest");
 		props.put("enable.auto.commit", "false");
 //		props.put("enable.auto.commit", "true");
@@ -67,10 +65,10 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 	}
 
 	// when auto.commit true
-//	@KafkaListener(topics = "email_push", groupId = "email_push", containerFactory = "klf")
-	@KafkaListener(topics = "email_push", groupId = "pushservice", containerFactory = "klf")
+//	@KafkaListener(topics = "t1", groupId = "t1", containerFactory = "klf")
+	@KafkaListener(topics = "t1", groupId = "t1", containerFactory = "klf")
 	public void listen2(String message) {
-		System.out.println("email_push mssg : " + message);
+		System.out.println("t1 mssg : " + message);
 
 	}
 
@@ -88,9 +86,9 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 //	@KafkaListener(topics = "test", groupId = "test")
 //	@KafkaListener(topics = "test", groupId = "test1")
 
-//	@KafkaListener(topics = "like_follow", groupId = "hsreco")
-//	@KafkaListener(topics = "svd_view", groupId = "svdView")
-//	@KafkaListener(topics = "email_push", groupId = "email_push")
+//	@KafkaListener(topics = "t1", groupId = "t1")
+//	@KafkaListener(topics = "s1", groupId = "s1")
+//	@KafkaListener(topics = "t1", groupId = "t1")
 // when auto.commit false
 	public void listen(String message, Acknowledgment acknowledgment) {
 		System.out.println("Received Messasge in group foo: " + message);
@@ -109,13 +107,13 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		Properties props = new Properties();
 		String jaasTemplate = "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";";
-		String jaasCfg = String.format(jaasTemplate, "songLoggingConsumer", "songLoggingConsumer");
-//		String jaasCfg = String.format(jaasTemplate, "gdprStagReco", "gdprStagReco");
+		String jaasCfg = String.format(jaasTemplate, "u", "p");
+//		String jaasCfg = String.format(jaasTemplate, "s", "s");
 		props.put("security.protocol", "SASL_PLAINTEXT");
 		props.put("sasl.mechanism", "PLAIN");
 		props.put("sasl.jaas.config", jaasCfg);
 //		props.setProperty("bootstrap.servers", "localhost:9091");
-		props.setProperty("bootstrap.servers", "172.26.212.67:9091,172.26.11.100:9091,172.26.11.137:9091");
+		props.setProperty("bootstrap.servers", "host1:9091,host2:9092,host3:9093");
 		props.setProperty("auto.offset.reset", "earliest");
 		props.setProperty("group.id", "inAppropriate");
 //		props.setProperty("group.id", "reco");
@@ -129,7 +127,7 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 //		props.setProperty("max.poll.interval.ms", "5000");
 		KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 //		consumer.subscribe(Arrays.asList("gdpr"));
-		consumer.subscribe(Arrays.asList("influencer_svd"));
+		consumer.subscribe(Arrays.asList("topicName"));
 
 		/*
 		 * TopicPartition topicPartition = new TopicPartition("gdpr", 0);
@@ -168,7 +166,7 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 					if (record.offset() != 21) {
 						System.out.printf("partition = %d,offset = %d, key = %s, value = %s%n", record.partition(),
 								record.offset(), record.key(), record.value());
-						TopicPartition partition = new TopicPartition("gdpr", record.partition());
+						TopicPartition partition = new TopicPartition("test", record.partition());
 						System.out.println("position : " + consumer.position(partition));
 
 						Map<TopicPartition, OffsetAndMetadata> map = Collections.singletonMap(partition,
@@ -185,7 +183,7 @@ public class KafkaConsumerApplication {// implements CommandLineRunner {
 						System.out.printf("inside else...........");
 
 						Map<TopicPartition, OffsetAndMetadata> map = Collections
-								.singletonMap(new TopicPartition("gdpr", 0), new OffsetAndMetadata(2 + 1));
+								.singletonMap(new TopicPartition("test", 0), new OffsetAndMetadata(2 + 1));
 						// consumer.commitSync(map);
 					}
 				}
